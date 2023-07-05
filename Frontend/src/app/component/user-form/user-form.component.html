@@ -1,0 +1,166 @@
+<div class="container">
+    <h1>User Management</h1>
+  
+    <form [formGroup]="userForm">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" formControlName="name" class="form-control" id="name" required minlength="3" maxlength="50">
+        <div *ngIf="userForm.get('name')?.invalid && (userForm.get('name')?.dirty || userForm.get('name')?.touched)">
+          <div *ngIf="userForm.get('name')?.hasError('required')">Name is required.</div>
+          <div *ngIf="userForm.get('name')?.hasError('minlength')">Name must be at least 3 characters.</div>
+          <div *ngIf="userForm.get('name')?.hasError('maxlength')">Name cannot exceed 50 characters.</div>
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" formControlName="username" class="form-control" id="username" required minlength="3" maxlength="20">
+        <div *ngIf="userForm.get('username')?.invalid && (userForm.get('username')?.dirty || userForm.get('username')?.touched)">
+          <div *ngIf="userForm.get('username')?.hasError('required')">Username is required.</div>
+          <div *ngIf="userForm.get('username')?.hasError('minlength')">Username must be at least 3 characters.</div>
+          <div *ngIf="userForm.get('username')?.hasError('maxlength')">Username cannot exceed 20 characters.</div>
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" formControlName="email" class="form-control" id="email" required>
+        <div *ngIf="userForm.get('email')?.invalid && (userForm.get('email')?.dirty || userForm.get('email')?.touched)">
+          <div *ngIf="userForm.get('email')?.hasError('required')">Email is required.</div>
+          <div *ngIf="userForm.get('email')?.hasError('email')">Invalid email format.</div>
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" formControlName="password" class="form-control" id="password" required minlength="8" maxlength="20">
+        <div *ngIf="userForm.get('password')?.invalid && (userForm.get('password')?.dirty || userForm.get('password')?.touched)">
+          <div *ngIf="userForm.get('password')?.hasError('required')">Password is required.</div>
+          <div *ngIf="userForm.get('password')?.hasError('maxlength')">Password must be at least 8 characters.</div>
+          <!-- <div *ngIf="userForm.get('password')?.errors['maxlength']">Password cannot exceed 20 characters.</div> -->
+          <div *ngIf="userForm.get('password')?.hasError('maxlength')">Password cannot exceed 20 characters.</div>
+
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="profilePicture">Profile Picture</label>
+        <input type="text" formControlName="profilePicture" class="form-control" id="profilePicture">
+      </div>
+  
+      <div class="form-group">
+        <label for="bio">Bio</label>
+        <textarea formControlName="bio" class="form-control" id="bio" maxlength="200"></textarea>
+      </div>
+  
+      <div class="form-group">
+        <label for="location">Location</label>
+        <input type="text" formControlName="location" class="form-control" id="location" maxlength="100">
+      </div>
+  
+      <div class="form-group">
+        <label for="dateOfBirth">Date of Birth</label>
+        <input type="date" formControlName="dateOfBirth" class="form-control" id="dateOfBirth">
+      </div>
+  
+      <div class="form-group">
+        <label for="gender">Gender</label>
+        <select formControlName="gender" class="form-control" id="gender">
+          <option value=""></option>
+          <option value="MALE">Male</option>
+          <option value="FEMALE">Female</option>
+          <option value="OTHER">Other</option>
+        </select>
+      </div>
+  
+      <div class="form-group">
+        <label for="interests">Interests</label>
+        <input type="text" formControlName="interests" class="form-control" id="interests">
+      </div>
+  
+      <button type="button" class="btn btn-primary" (click)="createUser()">Create</button>
+      <button type="button" class="btn btn-primary" (click)="updateUser()" [disabled]="!currentUser">Update</button>
+
+      <!-- <button type="submit" class="btn btn-primary" (click)="createUser()" *ngIf="showAdd" [disabled]="userForm.invalid">Add Product</button> -->
+      <!-- <button type="submit" class="btn btn-primary" (click)="updateUser(userForm.value)" *ngIf="showUpdate" class="update-button">Update Product</button> -->
+  
+    </form>
+  
+    <hr>
+  
+    <h2>Users</h2>
+  
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Profile pic</th>
+          <th>Bio</th>
+          <th>Location</th>
+          <th>DOB</th>
+          <th>Gender</th>
+          <th>Interests</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.name }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.profilePicture}}</td>
+          <td>{{ user.bio }}</td>
+          <td>{{ user.location }}</td>
+          <td>{{ user.dateOfBirth}}</td>
+          <td>{{ user.gender }}</td>
+          <td>{{ user.interests }}</td>
+          <td>
+            <button type="button" class="btn btn-primary" (click)="getUserById(user.id)">Edit</button>
+            <button type="button" class="btn btn-danger" (click)="deleteUser(user.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+
+
+
+  <div class="container">
+  
+    <h2>Search Users</h2>
+  
+    <form [formGroup]="searchByUsernameForm">
+      <div class="form-group">
+        <label for="searchByUsername">Search by Username</label>
+        <input type="text" formControlName="username" class="form-control" id="searchByUsername" required>
+      </div>
+      <button type="button" class="btn btn-primary" (click)="searchByUsername()">Search</button>
+    </form>
+  
+     <hr>
+  
+    <form [formGroup]="searchByEmailForm">
+      <div class="form-group">
+        <label for="searchByEmail">Search by Email</label>
+        <input type="email" formControlName="email" class="form-control" id="searchByEmail" required>
+      </div>
+      <button type="button" class="btn btn-primary" (click)="searchByEmail()">Search</button>
+    </form>
+  
+    <div *ngIf="searchResult">
+      <h3>Search Result</h3>
+      <div>
+        <strong>Name:</strong> {{ searchResult.name }}
+      </div>
+      <div>
+        <strong>Username:</strong> {{ searchResult.username }}
+      </div>
+      <div>
+        <strong>Email:</strong> {{ searchResult.email }}
+      </div>    
+    </div>
+  </div>
+  
